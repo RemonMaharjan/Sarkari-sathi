@@ -1,0 +1,57 @@
+{
+  "driving_license_new": {
+    "title": "New Nepali Driving License",
+    "criteria": {
+      "age_requirements": {
+        "scooter_bike_category_A_K": "Minimum 16 years of age",
+        "car_jeep_delivery_van_category_B": "Minimum 18 years of age",
+        "heavy_vehicle_category_F_G": "Minimum 21 years of age"
+      },
+      "health_standards": "Must pass a physical fitness test (eyesight, color blindness, and physical mobility) "
+    },
+    "required_documents": [
+      "Original Nepali Citizenship Certificate ",
+      "Medical Fitness Certificate from a certified doctor ",
+      "Proof of address (if different from citizenship) ",
+      "Passport-sized photographs (typically digital capture now) "
+    ],
+    "process": [
+      "Step 1: Fill out the online application via the Department of Transport Management (DoTM) portal.",
+      "Step 2: Visit the Transport Management Office (TMO) for document verification and biometrics.",
+      "Step 3: Appear for the Written Examination (Likhit).",
+      "Step 4: Upon passing Likhit, appear for the Practical Test (Trial) within 90 days. You have 3 attempts per application ",
+      "Step 5: Pay the license fee after passing the trial and receive a payment receipt (valid for driving until the smart card is printed)."
+    ]
+  },
+  "license_lost_destroyed_replacement": {
+    "title": "Duplicate License (Pratilipi)",
+    "criteria": "Applicable if the original license is lost, stolen, or physically damaged beyond recognition",
+    "required_documents": [
+      "Police Report stating the loss of the license",
+      "Copy of the lost license (if available) or License Number.",
+      "Original Citizenship Certificate.",
+      "Application form for a duplicate copy"
+    ],
+    "process": [
+      "Step 1: File a report at the local police station to get a 'Lost Document' verification.",
+      "Step 2: Visit the TMO where your license was last issued/renewed.",
+      "Step 3: Submit the application, police report, and citizenship copy.",
+      "Step 4: Pay the duplicate fee and receive the replacement receipt."
+    ]
+  },
+  "other_scenarios": {
+    "category_addition": {
+      "desc": "Adding a new category (e.g., adding Car to an existing Bike license).",
+      "process": "Apply for 'Category Addition' online. You only need to pass the Practical Test (Trial) for the new category; a new written exam is usually not required.",
+      "requirement": "Original driving license and citizenship."
+    },
+    "license_renewal": {
+      "desc": "Licenses must be renewed every 5 year.",
+      "requirement": "Old driving license, medical certificate, and renewal fee."
+    },
+    "international_permit": {
+      "desc": "Foreigners or Nepalis with international licenses can apply for a local permit validation.",
+      "requirement": "Valid international driving permit and original passport/visa."
+    }
+  }
+}

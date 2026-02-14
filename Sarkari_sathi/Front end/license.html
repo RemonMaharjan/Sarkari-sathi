@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sarkari Sathi — Driving License</title>
+    <link rel="stylesheet" href="Dashboard.css">
+    <style>
+        .license-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+        }
+        .license-card {
+            background: white;
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid var(--line);
+            text-align: center;
+        }
+        .license-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border: 1px solid #eee;
+        }
+        .legal-box {
+            background: rgba(15, 118, 110, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin: 20px;
+            border-radius: 0 12px 12px 0;
+            line-height: 1.6;
+            font-size: 14.5px;
+        }
+        /* Makes the application form span both columns on large screens */
+        .full-width {
+            grid-column: span 2;
+        }
+        @media (max-width: 600px) {
+            .license-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mountains"></div>
+
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <div>
+                    <h1 id="pageTitle">Driving License (सवारी चालक अनुमति पत्र)</h1>
+                    <p id="pageSubtitle">Process, Trial Rules & Temporary License</p>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="pill" onclick="toggleLanguage()" style="cursor: pointer; background: none; border: none; padding: 8px 16px;">Language: <b id="langDisplay">EN / नेपाली</b></button>
+                <button class="logout" onclick="window.location.href='Dashboard.html'">← Back to Dashboard</button>
+            </div>
+        </div>
+
+        <div class="grid">
+            <section class="panel">
+                <div class="panelHead">
+                    <h2 id="legalOverview">Legal Overview & Process</h2>
+                </div>
+                
+                <div class="legal-box" id="legalText">
+                    To get a driving license in Nepal, you first apply online through the Department of Transport Management (DoTM) portal and visit an office for biometrics and a basic medical check. The process involves a written exam with 20 multiple-choice questions (you need 50% to pass) followed by a practical "trial" test. For scooters and bikes (Category A/K), you must be at least 16 years old, while for cars (Category B), you must be 18. Under the current 70-point system, you don't need a perfect score to pass the trial; small mistakes like one engine stall or a single foot-touch on certain sections only deduct points, provided you maintain a total score of at least 70/100. Heavy vehicle licenses, such as those for buses or trucks (Category G), require you to be 21 and usually require at least two years of experience driving smaller vehicles. Once you pass, you'll receive a payment slip that acts as a temporary license for up to 10 years while you wait for your physical smart card to be printed.
+                </div>
+
+                <div class="panelHead" style="border-top: 1px solid var(--line);">
+                    <h2 id="visualGuide">Visual Guide</h2>
+                    <p id="visualGuideDesc">Document categories and application forms for your license.</p>
+                </div>
+
+                <div class="license-grid">
+                    <div class="license-card">
+                        <img src="license.png" alt="Category A and B">
+                        <p class="svcTitle" id="card1Title">Category A/B (Bike & Scooter)</p>
+                        <p class="svcSub" id="card1Desc">Standard categories for two-wheelers.</p>
+                    </div>
+
+                    <div class="license-card">
+                        <img src="rasid.png" alt="Pink Pass Paper">
+                        <p class="svcTitle" id="card2Title">Pink Pass Paper</p>
+                        <p class="svcSub" id="card2Desc">Your temporary license after passing the trial.</p>
+                    </div>
+
+                    <div class="license-card full-width">
+                        <img src="formlis.png" alt="Application Form">
+                        <p class="svcTitle" id="card3Title">Application Form (Nibidhan)</p>
+                        <p class="svcSub" id="card3Desc">Sample of the form required for the process.</p>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="panel">
+                <div class="chatHead">
+                    <div class="bot"></div>
+                    <div><h3 id="localOfficeTitle">Local Office Info</h3></div>
+                </div>
+                <div style="padding: 20px;">
+                    <p id="localOfficeDesc" style="font-size: 13px; color: var(--muted); margin-bottom: 10px;">
+                        Select your district to find contact details for your local administrative office.
+                    </p>
+                    
+                    <select id="districtSelect" onchange="showContactInfo()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 20px;">
+                        <option value="">-- Select District --</option>
+                    </select>
+
+                    <div id="contactResult" style="display: none; background: rgba(15, 118, 110, 0.08); padding: 15px; border-radius: 12px; border: 1px solid rgba(15, 118, 110, 0.2);">
+                        <p id="daoName" style="font-weight: 800; color: var(--primary); margin-bottom: 8px;"></p>
+                        <p style="font-size: 13.5px;"><b id="phoneLabel">Phone:</b> <span id="daoPhone"></span></p>
+                        <p style="font-size: 13.5px;"><b id="emailLabel">Email:</b> <span id="daoEmail"></span></p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <div class="enroll-section" style="text-align: center; padding: 30px; border-top: 1px solid var(--line);">
+    <h3 id="enrollTitle">Do you want to register for a License?</h3>
+    <p class="svcSub" id="enrollDesc" style="margin-bottom: 20px;">Redirect to the official DoTM portal.</p>
+    <a href="https://applydlnew.dotm.gov.np/login" target="_blank" class="enroll-btn" style="text-decoration: none; padding: 12px 24px; background: var(--primary); color: white; border-radius: 10px; font-weight: bold; display: inline-block;">Register License →</a>
+</div>
+
+    <script src="contact.js"></script>
+    <script>
+        let currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+
+        const translations = {
+            en: {
+                pageTitle: 'Driving License (सवारी चालक अनुमति पत्र)',
+                pageSubtitle: 'Process, Trial Rules & Temporary License',
+                langDisplay: 'EN / नेपाली',
+                legalOverview: 'Legal Overview & Process',
+                legalText: 'To get a driving license in Nepal, you first apply online through the Department of Transport Management (DoTM) portal and visit an office for biometrics and a basic medical check. The process involves a written exam with 20 multiple-choice questions (you need 50% to pass) followed by a practical "trial" test. For scooters and bikes (Category A/K), you must be at least 16 years old, while for cars (Category B), you must be 18. Under the current 70-point system, you don\'t need a perfect score to pass the trial; small mistakes like one engine stall or a single foot-touch on certain sections only deduct points, provided you maintain a total score of at least 70/100. Heavy vehicle licenses, such as those for buses or trucks (Category G), require you to be 21 and usually require at least two years of experience driving smaller vehicles. Once you pass, you\'ll receive a payment slip that acts as a temporary license for up to 10 years while you wait for your physical smart card to be printed.',
+                visualGuide: 'Visual Guide',
+                visualGuideDesc: 'Document categories and application forms for your license.',
+                card1Title: 'Category A/B (Bike & Scooter)',
+                card1Desc: 'Standard categories for two-wheelers.',
+                card2Title: 'Pink Pass Paper',
+                card2Desc: 'Your temporary license after passing the trial.',
+                card3Title: 'Application Form (Nibidhan)',
+                card3Desc: 'Sample of the form required for the process.',
+                localOfficeTitle: 'Local Office Info',
+                localOfficeDesc: 'Select your district to find contact details for your local administrative office.',
+                enrollTitle: 'Do you want to register for a License?',
+                enrollDesc: 'Redirect to the official DoTM portal.',
+                phoneLabel: 'Phone:',
+                emailLabel: 'Email:'
+            },
+            ne: {
+                pageTitle: 'ड्राइभिङ लाइसेन्स (सवारी चालक अनुमति पत्र)',
+                pageSubtitle: 'प्रक्रिया, परीक्षण नियमहरू र अस्थायी लाइसेन्स',
+                langDisplay: 'नेपाली / EN',
+                legalOverview: 'कानूनी विवरण र प्रक्रिया',
+                legalText: 'नेपालमा ड्राइभिङ लाइसेन्स पाउनको लागि, तपाईंले पहिले सवारी र यातायात व्यवस्थापन विभाग (DoTM) पोर्टल मार्फत अनलाइन आवेदन गर्नुहुन्छ र बायोमेट्रिक्स र आधारभूत चिकित्सीय जाँचको लागि एक कार्यालयमा जानुहुन्छ। प्रक्रियामा २० बहुविकल्प प्रश्न भएको लिखित परीक्षा (तपाईंले ५०% आवश्यक) र त्यसपछि व्यावहारिक "परीक्षण" परीक्षा समावेश हुन्छ। स्कुटर र बाइकहरू (श्रेणी A/K) को लागि, तपाईं कम्तिमा १६ वर्षको हुनुपर्छ, जबकि कारहरू (श्रेणी B) को लागि, तपाईं १८ हुनुपर्छ। वर्तमान ७०-बिन्दु प्रणालीमा, तपाईंलाई परीक्षणमा उत्तीर्ण हुन पूर्ण अंक आवश्यक छैन; एक ईन्जिन स्टल वा निश्चित खण्डमा एकल पैर-स्पर्श जस्ता साना गलतीहरूले केवल अंक काटन्छ, बशर्ते तपाईंले कम्तिमा ७०/१०० को कुल अंक राख्नुहुन्छ। भारी गाडी लाइसेन्सहरू, जस्तै बसहरू वा ट्रकहरू (श्रेणी G) को लागि, तपाईं २१ वर्षको हुनुपर्छ र सामान्यतः साना गाडीहरू चलाउने कम्तिमा दुई वर्षको अनुभव आवश्यक हुन्छ।',
+                visualGuide: 'दृश्य गाइड',
+                visualGuideDesc: 'आपनो लाइसेन्सको लागि कागजात श्रेणीहरू र आवेदन फार्महरू।',
+                card1Title: 'श्रेणी A/B (बाइक र स्कुटर)',
+                card1Desc: 'दुई-पहिया गाडीहरूको लागि मानक श्रेणीहरू।',
+                card2Title: 'गुलाबी पास कागज',
+                card2Desc: 'परीक्षण उत्तीर्ण गरेपछि आपनो अस्थायी लाइसेन्स।',
+                card3Title: 'आवेदन फार्म (निबिधान)',
+                card3Desc: 'प्रक्रियाको लागि आवश्यक फार्मको नमूना।',
+                localOfficeTitle: 'स्थानीय कार्यालय जानकारी',
+                localOfficeDesc: 'आपनो स्थानीय प्रशासनिक कार्यालयको सम्पर्क विवरण खोज्न आपनो जिल्ला छनोट गर्नुहोस्।',
+                enrollTitle: 'के तपाई लाइसेन्सको लागि नामांकन गर्न चाहनुहुन्छ?',
+                enrollDesc: 'DoTM को आधिकारिक पोर्टलमा पुनर्निर्देशन गर्नुहोस्।',
+                phoneLabel: 'फोन:',
+                emailLabel: 'ईमेल:'
+            }
+        };
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'ne' : 'en';
+            updatePageLanguage();
+            localStorage.setItem('preferredLanguage', currentLanguage);
+        }
+
+        function updatePageLanguage() {
+            const trans = translations[currentLanguage];
+            document.getElementById('pageTitle').textContent = trans.pageTitle;
+            document.getElementById('pageSubtitle').textContent = trans.pageSubtitle;
+            document.getElementById('langDisplay').textContent = trans.langDisplay;
+            document.getElementById('legalOverview').textContent = trans.legalOverview;
+            document.getElementById('legalText').textContent = trans.legalText;
+            document.getElementById('visualGuide').textContent = trans.visualGuide;
+            document.getElementById('visualGuideDesc').textContent = trans.visualGuideDesc;
+            document.getElementById('card1Title').textContent = trans.card1Title;
+            document.getElementById('card1Desc').textContent = trans.card1Desc;
+            document.getElementById('card2Title').textContent = trans.card2Title;
+            document.getElementById('card2Desc').textContent = trans.card2Desc;
+            document.getElementById('card3Title').textContent = trans.card3Title;
+            document.getElementById('card3Desc').textContent = trans.card3Desc;
+            document.getElementById('localOfficeTitle').textContent = trans.localOfficeTitle;
+            document.getElementById('localOfficeDesc').textContent = trans.localOfficeDesc;
+            document.getElementById('enrollTitle').textContent = trans.enrollTitle;
+            document.getElementById('enrollDesc').textContent = trans.enrollDesc;
+            document.getElementById('phoneLabel').textContent = trans.phoneLabel;
+            document.getElementById('emailLabel').textContent = trans.emailLabel;
+        }
+
+        window.addEventListener('load', () => {
+            updatePageLanguage();
+        });
+
+        window.toggleLanguage = toggleLanguage;
+    </script>

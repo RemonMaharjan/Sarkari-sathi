@@ -1,0 +1,48 @@
+{
+  "voter_id_new": {
+    "title": "New Voter Registration",
+    "criteria": [
+      "Must be a Nepali Citizen.",
+      "Must have reached the age of 18 by the date prescribed by the Election Commission.",
+      "Must have a permanent residence within the relevant Ward of a Municipality or Rural Municipality."
+    ],
+    "required_documents": [
+      "Nepali Citizenship Certificate (Original).",
+      "Land Ownership Certificate (Lal Purja) or Educational Certificate (if address or age isn't clear on citizenship).",
+      "Passport or Driver's License (secondary evidence if requested).",
+      "Ward Office Recommendation (if other documents fail to prove residence)."
+    ],
+    "process": [
+      "Step 1: Visit the District Election Office or designated registration centers during the collection period.",
+      "Step 2: Provide personal details and have your photograph and fingerprints taken (biometrics).",
+      "Step 3: Verification of the details by the Registration Officer.",
+      "Step 4: Once the final list is published, you will be issued a Voter ID Card."
+    ]
+  },
+  "voter_id_lost_or_correction": {
+    "title": "Lost, Destroyed or Error Correction",
+    "scenario_lost_destroyed": "If the card is lost or destroyed, an application for a duplicate must be filed.",
+    "scenario_correction": "If there is an error in the name or details in the published list, the voter or a family member can apply to the Registration Officer to fix it.",
+    "required_documents": [
+      "Application for a duplicate or correction.",
+      "Evidence supporting the claim (e.g., citizenship copy, police report for lost card)."
+    ],
+    "process": [
+      "Submit the application to the District Election Office.",
+      "The officer conducts an inquiry and submits it to the Chief Registration Officer for approval."
+    ]
+  },
+  "other_scenarios": {
+    "migration_or_marriage": {
+      "desc": "When moving due to marriage or relocation, you can transfer your name to the new location.",
+      "requirement": "Proof of marriage or a Migration Certificate (Basai Sarai) must be presented."
+    },
+    "removal_of_name": {
+      "desc": "Names are removed in case of death, renunciation of citizenship, or double registration.",
+      "process": "Family members must notify the Registration Officer with proof of death or citizenship surrender."
+    },
+    "temporary_voters": {
+      "desc": "Government employees, security forces, and prisoners can register in a 'Temporary Voter List' to vote in Proportional (PR) elections."
+    }
+  }
+}

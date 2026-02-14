@@ -1,0 +1,62 @@
+{
+  "passport_new": {
+    "title": "New Ordinary Passport Registration",
+    "criteria": [
+      "Must be a Nepali Citizen.",
+      "Must possess a valid Nepali Citizenship Certificate.",
+      "Minors under 16 require a minor identity card and parents' citizenship."
+    ],
+    "required_documents": [
+      "Original Nepali Citizenship Certificate.",
+      "Valid National Identity (NID) Number (mandatory for applicants in Nepal).",
+      "Minor Identity Card (for those under 16).",
+      "Old passport (if applying for renewal/extension)."
+    ],
+    "fees_nepal": {
+      "District_Administration_Office": "NPR 5,000 (34 pages) / NPR 10,000 (66 pages).",
+      "Passport_Department_Fast_Track": "NPR 12,000 (34 pages) / NPR 20,000 (66 pages)"
+    },
+    "process": [
+      "Step 1: Complete the online Pre-enrollment for Passport.",
+      "Step 2: Book an appointment date at the District Administration Office (DAO) or Passport Department.",
+      "Step 3: Visit the office for live biometrics (photo, fingerprints, signature).",
+      "Step 4: Pay the designated fee and track the application via SMS/Online."
+    ]
+  },
+  "passport_lost_stolen_damaged": {
+    "title": "Lost, Stolen, or Damaged Passport Replacement",
+    "required_documents": [
+      "Police Report (stating the loss/theft of the passport).",
+      "Original Nepali Citizenship Certificate.",
+      "Copy of the lost passport (if available).",
+      "Application letter explaining the reason for damage or loss."
+    ],
+    "additional_fees": {
+      "In_Nepal": "Additional NPR 5,000 on top of the regular fee.",
+      "At_Missions_Abroad": "50% extra on top of the regular mission fee."
+    },
+    "process": [
+      "Step 1: Obtain a police report immediately after the loss.",
+      "Step 2: Apply for a new passport under the 'Lost/Damaged' category.",
+      "Step 3: Pay the standard fee plus the 'Lost/Damaged' penalty fee."
+    ]
+  },
+  "special_scenarios": {
+    "foreign_employment_workers": {
+      "desc": "Workers whose passport validity is less than their approved labor contract period can apply for a new passport.",
+      "requirement": "Proof of approved foreign employment period."
+    },
+    "students_abroad": {
+      "desc": "Students whose passport validity is less than their study duration can apply for a new passport.",
+      "requirement": "Proof of higher education duration abroad."
+    },
+    "emergency_travel_document": {
+      "desc": "A 'Travel Document' or 'Temporary Passport' can be issued for emergency one-way travel to Nepal.",
+      "fee_abroad": "USD 50 or equivalent."
+    },
+    "seamans_passport": {
+      "fee_nepal": "NPR 12,000.",
+      "fee_mission": "USD 120."
+    }
+  }
+}

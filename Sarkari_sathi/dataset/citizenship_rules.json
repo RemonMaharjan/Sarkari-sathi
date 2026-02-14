@@ -1,0 +1,23 @@
+{
+  "new_citizenship_descent": {
+    "criteria": "Any person whose father or mother is a citizen of Nepal at the time of their birth. The applicant must be at least 16 years old.",
+    "required_documents": [
+      "Copy of the Nepali citizenship certificate of the father, mother, or a relative within three generations of the lineage.",
+      "Recommendation from the Village Development Committee or Municipality (Ward Office) certifying birth records and relationship",
+      "Note: For children of a Nepali female citizen married to a foreign citizen, specific naturalization rules apply."
+    ],
+    "process": "Submit the application and documents to the designated authority (typically the CDO at the District Administration Office). If documents are missing, the authority may conduct an on-site inquiry and require witness signatures from three local citizens."
+  },
+  "lost_destroyed_citizenship": {
+    "criteria": "If a citizenship certificate is lost or destroyed, or if details need correction (such as minor errors in name or age).",
+    "required_documents": [
+      "Application for a duplicate (Pratilipi) along with necessary evidence of the loss or the error.",
+      "In case of relocation (migration), the previous citizenship certificate must be surrendered to receive a new one with the updated address."
+    ],
+    "process": "The designated officer will examine the evidence and may conduct a witness inquiry (Sarjamin) before issuing a duplicate or corrected certificate."
+  },
+  "important_legal_notes": {
+    "penalties": "Providing false information to obtain citizenship can result in 1 to 5 years of imprisonment or a fine of 50,000 to 100,000 NPR.",
+    "dual_citizenship": "Nepal does not allow dual citizenship; Nepali citizenship is automatically lost upon voluntarily acquiring foreign citizenship."
+  }
+}

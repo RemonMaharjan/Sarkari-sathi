@@ -1,0 +1,140 @@
+:root {
+    --base: #DC143C; /* This is Crimson Red */
+    --accent: #003893;
+    --text-color: #2E2B41;
+    --input-color: #f4f7f9;
+    /* Adding these so your variables match your classes */
+    --primary: #DC143C; 
+    --bg: #DC143C; 
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Use the variable or a hex code like #FF0000 */
+    /*background-color: var(--base); */
+    
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.auth-container {
+    background: white;
+    width: 380px;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-top: 5px solid var(--primary);
+}
+
+.form-box h2 { color: var(--primary); margin-bottom: 5px; }
+.form-box p { font-size: 14px; color: #666; margin-bottom: 25px; }
+
+.input-group { margin-bottom: 15px; text-align: left; }
+.input-group label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 5px; }
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box; /* Critical for layout */
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-primary:hover { background-color: var(--accent); }
+
+.toggle-text { font-size: 13px; margin-top: 20px; text-align: center; }
+.toggle-text a { color: var(--accent); text-decoration: none; font-weight: bold; }
+
+.hidden { display: none; }
+
+/*Dashboard ko code yeta bata suru*/
+
+/* Dashboard Specific Layout */
+.dashboard-body {
+    /* Ash Gray Gradient with a subtle hint of Blue */
+    /*background: linear-gradient(135deg, #B2BEB5 0%, #cfd8d3 100%);*/
+    /* Pattern overlay: Subtle grid or dots for a technical feel */
+    background-image: url("background1.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Add a large, faint Nepal Map Watermark in the center */
+.dashboard-body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background-image: url('background1.jpg'); /* Use your flag image but faded */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.0; /* Make it very faint so it's professional */
+    z-index: -1;
+}
+.dashboard-container {
+    text-align: center;
+    width: 90%;
+    max-width: 800px;
+}
+
+.welcome-text {
+    color: #2E2B41; /* Default text color from your :root */
+    margin-bottom: 30px;
+}
+
+/* The Grid for 4 Options */
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 20px;
+}
+
+/* The Crimson Service Boxes */
+.service-box {
+    background-color: #DC143C; /* Crimson Red */
+    color: #ffffff; /* Text color for contrast */
+    padding: 40px 20px;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.service-box:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    background-color: #b01030; /* Darker red on hover */
+}
+
+/* Mobile Responsiveness: Stack boxes on small screens */
+@media (max-width: 600px) {
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+}

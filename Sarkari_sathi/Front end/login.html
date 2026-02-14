@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sarkari Sathi — Login</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#eef6ff;
+      --bg2:#eaf7f4;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:#e5e7eb;
+      --primary:#0f766e;
+      --primary2:#0ea5a1;
+      --shadow: 0 18px 50px rgba(2, 6, 23, .12);
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px 16px;
+      background:
+        radial-gradient(1200px 700px at 10% 15%, var(--bg1), transparent 55%),
+        radial-gradient(1200px 700px at 90% 80%, var(--bg2), transparent 55%),
+        linear-gradient(180deg, #f8fbff, #f3fbf8);
+    }
+
+    .wrap{width:min(520px, 100%);}
+    .card{
+      background:rgba(255,255,255,.9);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+      padding:24px;
+    }
+
+    h2{margin:0 0 6px;font-size:22px;}
+    .sub{margin:0 0 18px;color:var(--muted);font-size:14px;}
+
+    label{display:block;font-size:13px;margin:12px 0 6px;font-weight:600;}
+
+    .field{
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:white;
+    }
+
+    input{
+      border:0;
+      outline:none;
+      width:100%;
+      font-size:14px;
+    }
+
+    .btn{
+      width:100%;
+      margin-top:14px;
+      padding:12px;
+      border:0;
+      border-radius:14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .link{
+      color:#0f766e;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .hidden{display:none;}
+    .footerText{text-align:center;margin-top:14px;font-size:13px;color:var(--muted);}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <!-- LOGIN CARD -->
+    <div class="card" id="loginCard">
+      <h2>Welcome Back</h2>
+      <p class="sub">Login to continue.</p>
+
+      <label>Email</label>
+      <div class="field">
+        <input id="email" type="email" placeholder="Enter email" />
+      </div>
+
+      <label>Password</label>
+      <div class="field">
+        <input id="pass" type="password" placeholder="Enter password" />
+      </div>
+
+      <button class="btn" id="loginBtn">Login</button>
+
+      <p class="footerText">
+        Don’t have an account?
+        <span class="link" id="showRegister">Create one</span>
+      </p>
+    </div>
+
+
+    <!-- REGISTER CARD -->
+    <div class="card hidden" id="registerCard">
+      <h2>Create Account</h2>
+      <p class="sub">Register to get started.</p>
+
+      <label>Email</label>
+      <div class="field">
+        <input id="reg-email" type="email" placeholder="Enter email" />
+      </div>
+
+      <label>Password</label>
+      <div class="field">
+        <input id="reg-pass" type="password" placeholder="Create password (min 6 chars)" />
+      </div>
+
+      <button class="btn" id="signupBtn">Register</button>
+
+      <p class="footerText">
+        Already have an account?
+        <span class="link" id="showLogin">Login</span>
+      </p>
+    </div>
+
+  </div>
+
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCXGM6eGWY9t2XhbnzlRBMwjSq1jEF-ZYI",
+      authDomain: "sarkari-sathi-4b4d2.firebaseapp.com",
+      projectId: "sarkari-sathi-4b4d2",
+      appId: "1:434265081062:web:9360165c60f0340111a727"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const loginCard = document.getElementById('loginCard');
+    const registerCard = document.getElementById('registerCard');
+    const showRegister = document.getElementById('showRegister');
+    const showLogin = document.getElementById('showLogin');
+
+    showRegister.onclick = () => {
+      loginCard.classList.add('hidden');
+      registerCard.classList.remove('hidden');
+    };
+
+    showLogin.onclick = () => {
+      registerCard.classList.add('hidden');
+      loginCard.classList.remove('hidden');
+    };
+
+    // ✅ REGISTER
+    document.getElementById('signupBtn').onclick = async () => {
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-pass').value;
+
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert("Registration Successful 🎉");
+        registerCard.classList.add('hidden');
+        loginCard.classList.remove('hidden');
+        window.location.href = "login.html"; 
+        
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
+    // ✅ LOGIN
+    document.getElementById('loginBtn').onclick = async () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('pass').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        
+       
+        window.location.href = "Dashboard.html"; 
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
+    // 🔎 Check if already logged in
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("Logged in as:", user.email);
+      }
+    });
+
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sarkari Sathi — Passport Information</title>
+    <link rel="stylesheet" href="Dashboard.css">
+    <style>
+        .passport-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+        }
+        .passport-card {
+            background: white;
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid var(--line);
+            text-align: center;
+        }
+        .passport-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+        .legal-box {
+            background: rgba(15, 118, 110, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin: 20px;
+            border-radius: 0 12px 12px 0;
+            line-height: 1.6;
+            font-size: 14.5px;
+        }
+        @media (max-width: 600px) {
+            .passport-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mountains"></div>
+
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <div>
+                    <h1 id="pageTitle">Passport (राहदानी)</h1>
+                    <p id="pageSubtitle">E-Passport Guidance & Types</p>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="pill" onclick="toggleLanguage()" style="cursor: pointer; background: none; border: none; padding: 8px 16px;">Language: <b id="langDisplay">EN / नेपाली</b></button>
+                <button class="logout" onclick="window.location.href='Dashboard.html'">← Back to Dashboard</button>
+            </div>
+        </div>
+
+        <div class="grid">
+            <section class="panel">
+                <div class="panelHead">
+                    <h2 id="legalOverview">Legal Overview</h2>
+                </div>
+                
+                <div class="legal-box" id="legalText">
+                    Nepalese passports, now issued as secure E-passports by the Department of Passport (DoP) 
+                    under the Ministry of Foreign Affairs, are biometric travel documents available to all 
+                    Nepali citizens. Applications require online pre-enrollment via the official portal 
+                    followed by in-person submission at local district offices (DAOs) or embassies.
+                </div>
+
+                <div class="panelHead" style="border-top: 1px solid var(--line);">
+                    <h2 id="typesHeading">Types of Passports in Nepal</h2>
+                    <p id="typesDesc">There are 4 main types of passports issued by the Government of Nepal.</p>
+                </div>
+
+                <div class="passport-grid">
+                    <div class="passport-card">
+                        <img src="Ordinary.png" alt="Ordinary Passport">
+                        <p class="svcTitle" id="type1">Ordinary (Chocolate Brown)</p>
+                    </div>
+                    <div class="passport-card">
+                        <img src="official.png" alt="Official Passport">
+                        <p class="svcTitle" id="type2">Official (Blue)</p>
+                    </div>
+                    <div class="passport-card">
+                        <img src="Diplomatic.png" alt="Diplomatic Passport">
+                        <p class="svcTitle" id="type3">Diplomatic (Red)</p>
+                    </div>
+                    <div class="passport-card">
+                        <img src="Travel Documents.png" alt="Service Passport">
+                        <p class="svcTitle" id="type4">Service (Orange)</p>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="panel">
+                <div class="chatHead">
+                    <div class="bot"></div>
+                    <div><h3 id="daoTitle">DAO Contact Info</h3></div>
+                </div>
+                <div style="padding: 20px;">
+                    <p id="daoDesc" style="font-size: 13px; color: var(--muted); margin-bottom: 10px;">
+                        Select your district to find your local passport submission office.
+                    </p>
+                    
+                    <select id="districtSelect" onchange="showContactInfo()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 20px;">
+                        <option value="">-- Select District --</option>
+                    </select>
+
+                    <div id="contactResult" style="display: none; background: rgba(15, 118, 110, 0.08); padding: 15px; border-radius: 12px; border: 1px solid rgba(15, 118, 110, 0.2);">
+                        <p id="daoName" style="font-weight: 800; color: var(--primary); margin-bottom: 8px;"></p>
+                        <p style="font-size: 13.5px;"><b id="phoneLabel">Phone:</b> <span id="daoPhone"></span></p>
+                        <p style="font-size: 13.5px;"><b id="emailLabel">Email:</b> <span id="daoEmail"></span></p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    <div class="enroll-section" style="text-align: center; padding: 30px; border-top: 1px solid var(--line);">
+    <h3 id="enrollTitle">Online Enrollment</h3>
+    <p class="svcSub" id="enrollDesc" style="margin-bottom: 20px;">You must book an appointment first.</p>
+    <a href="passport-options.html" class="enroll-btn" style="text-decoration: none; padding: 12px 24px; background: var(--primary); color: white; border-radius: 10px; font-weight: bold; display: inline-block;">Book Appointment →</a>
+</div>
+
+    <script src="contact.js"></script>
+    <script>
+        let currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+
+        const translations = {
+            en: {
+                pageTitle: 'Passport (राहदानी)',
+                pageSubtitle: 'E-Passport Guidance & Types',
+                langDisplay: 'EN / नेपाली',
+                legalOverview: 'Legal Overview',
+                legalText: 'Nepalese passports, now issued as secure E-passports by the Department of Passport (DoP) under the Ministry of Foreign Affairs, are biometric travel documents available to all Nepali citizens. Applications require online pre-enrollment via the official portal followed by in-person submission at local district offices (DAOs) or embassies.',
+                typesHeading: 'Types of Passports in Nepal',
+                typesDesc: 'There are 4 main types of passports issued by the Government of Nepal.',
+                type1: 'Ordinary (Chocolate Brown)',
+                type2: 'Official (Blue)',
+                type3: 'Diplomatic (Red)',
+                type4: 'Service (Orange)',
+                daoTitle: 'DAO Contact Info',
+                daoDesc: 'Select your district to find your local passport submission office.',
+                enrollTitle: 'Online Enrollment',
+                enrollDesc: 'You must book an appointment first.',
+                phoneLabel: 'Phone:',
+                emailLabel: 'Email:'
+            },
+            ne: {
+                pageTitle: 'पासपोर्ट (राहदानी)',
+                pageSubtitle: 'ई-पासपोर्ट मार्गदर्शन र प्रकारहरू',
+                langDisplay: 'नेपाली / EN',
+                legalOverview: 'कानूनी विवरण',
+                legalText: 'नेपाली पासपोर्टहरू, अब विदेश मामिला मन्त्रालय अन्तर्गतको पासपोर्ट विभाग (DoP) द्वारा सुरक्षित ई-पासपोर्टको रूपमा जारी गरिन्छ, सबै नेपाली नागरिकहरूका लागि उपलब्ध बायोमेट्रिक यात्रा कागजात। आवेदनहरूलाई आधिकारिक पोर्टल मार्फत अनलाइन पूर्व-नामांकन र त्यसपछि स्थानीय जिल्ला कार्यालयहरू (DAO) वा दूतावासमा व्यक्तिगत जमा गरण आवश्यक पर्छ।',
+                typesHeading: 'नेपालमा पासपोर्टका प्रकारहरू',
+                typesDesc: 'नेपालको सरकारले जारी गरेको ४ मुख्य प्रकारका पासपोर्टहरू छन्।',
+                type1: 'सामान्य (चकलेट ब्राउन)',
+                type2: 'आधिकारिक (नीलो)',
+                type3: 'कूटनीतिक (रेड)',
+                type4: 'सेवा (सुनौलो)',
+                daoTitle: 'DAO सम्पर्क जानकारी',
+                daoDesc: 'आपनो स्थानीय पासपोर्ट जमा कार्यालय खोज्न आपनो जिल्ला छनोट गर्नुहोस्।',
+                enrollTitle: 'अनलाइन नामांकन',
+                enrollDesc: 'तपाईंले पहिले अपोइन्टमेन्ट बुक गर्नुपर्छ।',
+                phoneLabel: 'फोन:',
+                emailLabel: 'ईमेल:'
+            }
+        };
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'ne' : 'en';
+            updatePageLanguage();
+            localStorage.setItem('preferredLanguage', currentLanguage);
+        }
+
+        function updatePageLanguage() {
+            const trans = translations[currentLanguage];
+            document.getElementById('pageTitle').textContent = trans.pageTitle;
+            document.getElementById('pageSubtitle').textContent = trans.pageSubtitle;
+            document.getElementById('langDisplay').textContent = trans.langDisplay;
+            document.getElementById('legalOverview').textContent = trans.legalOverview;
+            document.getElementById('legalText').textContent = trans.legalText;
+            document.getElementById('typesHeading').textContent = trans.typesHeading;
+            document.getElementById('typesDesc').textContent = trans.typesDesc;
+            document.getElementById('type1').textContent = trans.type1;
+            document.getElementById('type2').textContent = trans.type2;
+            document.getElementById('type3').textContent = trans.type3;
+            document.getElementById('type4').textContent = trans.type4;
+            document.getElementById('daoTitle').textContent = trans.daoTitle;
+            document.getElementById('daoDesc').textContent = trans.daoDesc;
+            document.getElementById('enrollTitle').textContent = trans.enrollTitle;
+            document.getElementById('enrollDesc').textContent = trans.enrollDesc;
+            document.getElementById('phoneLabel').textContent = trans.phoneLabel;
+            document.getElementById('emailLabel').textContent = trans.emailLabel;
+        }
+
+        window.addEventListener('load', () => {
+            updatePageLanguage();
+        });
+
+        window.toggleLanguage = toggleLanguage;
+    </script>

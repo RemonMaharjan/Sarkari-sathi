@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sarkari Sathi — Citizenship Information</title>
+    <link rel="stylesheet" href="Dashboard.css">
+    <style>
+        .doc-preview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            padding: 20px;
+        }
+        .img-card {
+            background: white;
+            border-radius: 14px;
+            padding: 12px;
+            border: 1px solid var(--line);
+            text-align: center;
+        }
+        .img-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .legal-box {
+            background: rgba(15, 118, 110, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin: 20px;
+            border-radius: 0 12px 12px 0;
+            line-height: 1.6;
+            font-size: 14.5px;
+            color: var(--text);
+        }
+        @media (max-width: 768px) {
+            .doc-preview { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="mountains"></div>
+
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <div>
+                    <h1 id="pageTitle">Citizenship (नागरिकता)</h1>
+                    <p id="pageSubtitle">Official Information & Visual Guide</p>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="pill" onclick="toggleLanguage()" style="cursor: pointer; background: none; border: none; padding: 8px 16px;">Language: <b id="langDisplay">EN / नेपाली</b></button>
+                <button class="logout" onclick="window.location.href='Dashboard.html'">← Back to Dashboard</button>
+            </div>
+        </div>
+
+        <div class="grid">
+            <section class="panel">
+                <div class="panelHead">
+                    <h2 id="legalOverview">Legal Overview</h2>
+                </div>
+                
+                <div class="legal-box" id="legalText">
+                    Nepali citizenship is primarily governed by the Constitution of Nepal and the Nepal Citizenship Act, 2006, 
+                    generally granted by descent if either parent is a Nepali citizen. It is essential for legal identity, 
+                    voting, property rights, and accessing government services for individuals aged 16 or older. 
+                    Citizenship can be acquired by descent, birth, naturalization, or honorary, while dual citizenship 
+                    is not permitted.
+                </div>
+
+                <div class="panelHead" style="background: none; border-top: 1px solid var(--line);">
+                    <h2 id="visualGuide">Visual Guide</h2>
+                    <p id="visualGuideDesc">Sample view of the Citizenship Card and the Nibidhan (Application Form).</p>
+                </div>
+
+                <div class="doc-preview">
+                    <div class="img-card">
+                        <img src="citizenship.jpg" alt="Nepali Citizenship Sample">
+                        <p class="svcTitle" id="cardSampleTitle">Citizenship Card Sample</p>
+                        <p class="svcSub" id="cardSampleDesc">Front and back view of the official card.</p>
+                    </div>
+
+                    <div class="img-card">
+                        <img src="form.jpg" alt="Citizenship Nibidhan Sample">
+                        <p class="svcTitle" id="formTitle">Nibidhan (Application Form)</p>
+                        <p class="svcSub" id="formDesc">The form required at your local Ward Office.</p>
+                    </div>
+                </div>
+
+                <div class="footerTrust" id="footerTrust">
+                     Images are for educational purposes only. <br>
+                     Source: Nepal Citizenship Act, 2006.
+                </div>
+            </section>
+
+<aside class="panel">
+    <div class="chatHead">
+        <div class="bot"></div>
+        <div>
+            <h3 id="daoTitle">Find Your DAO Office</h3>
+        </div>
+    </div>
+    <div style="padding: 20px;">
+        <p id="daoDesc" style="font-size: 13px; color: var(--muted); margin-bottom: 10px;">
+            Select your district to find contact details for the District Administration Office (DAO).
+        </p>
+        
+        <select id="districtSelect" onchange="showContactInfo()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 20px; font-family: inherit;">
+            <option value="">-- Select District --</option>
+            </select>
+
+        <div id="contactResult" style="display: none; background: rgba(15, 118, 110, 0.08); padding: 15px; border-radius: 12px; border: 1px solid rgba(15, 118, 110, 0.2);">
+            <p id="daoName" style="font-weight: 800; color: var(--primary); margin: 0 0 8px 0; font-size: 15px;"></p>
+            <p style="font-size: 13.5px; margin: 4px 0;"><b id="phoneLabel">Phone:</b> <span id="daoPhone"></span></p>
+            <p style="font-size: 13.5px; margin: 4px 0;"><b id="emailLabel">Email:</b> <span id="daoEmail"></span></p>
+        </div>
+    </div>
+</aside>
+        </div>
+    </div>
+    <div class="enroll-section" style="background: rgba(2, 132, 199, 0.05); border-top: 1px solid var(--line); padding: 30px; text-align: center;">
+    <div class="bot" style="margin: 0 auto 15px;"></div>
+    <p style="color: var(--text); font-weight: 600; font-size: 15px; max-width: 400px; margin: 0 auto;">
+        "We are still trying to digitalize the registration process for citizenship."
+    </p>
+</div>
+    <script src="contact.js"></script>
+    <script>
+        let currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+
+        const translations = {
+            en: {
+                pageTitle: 'Citizenship (नागरिकता)',
+                pageSubtitle: 'Official Information & Visual Guide',
+                langDisplay: 'EN / नेपाली',
+                legalOverview: 'Legal Overview',
+                legalText: 'Nepali citizenship is primarily governed by the Constitution of Nepal and the Nepal Citizenship Act, 2006, generally granted by descent if either parent is a Nepali citizen. It is essential for legal identity, voting, property rights, and accessing government services for individuals aged 16 or older. Citizenship can be acquired by descent, birth, naturalization, or honorary, while dual citizenship is not permitted.',
+                visualGuide: 'Visual Guide',
+                visualGuideDesc: 'Sample view of the Citizenship Card and the Nibidhan (Application Form).',
+                cardSampleTitle: 'Citizenship Card Sample',
+                cardSampleDesc: 'Front and back view of the official card.',
+                formTitle: 'Nibidhan (Application Form)',
+                formDesc: 'The form required at your local Ward Office.',
+                footerTrust: ' Images are for educational purposes only. <br> Source: Nepal Citizenship Act, 2006.',
+                daoTitle: 'Find Your DAO Office',
+                daoDesc: 'Select your district to find contact details for the District Administration Office (DAO).',
+                phoneLabel: 'Phone:',
+                emailLabel: 'Email:'
+            },
+            ne: {
+                pageTitle: 'नागरिकता',
+                pageSubtitle: 'आधिकारिक जानकारी र दृश्य गाइड',
+                langDisplay: 'नेपाली / EN',
+                legalOverview: 'कानूनी विवरण',
+                legalText: 'नेपाली नागरिकता मुख्यतः नेपालको संविधान र नेपाल नागरिकता ऐन, २०६३ द्वारा संचालित हुन्छ, सामान्यतः वंशक्रमबाट प्रदान गरिन्छ यदि कुनै पनि अभिभावक नेपाली नागरिक हुन्। यो कानूनी पहिचान, मतदान, सम्पत्तिको अधिकार, र १६ वा त्यससँग बढी उमेरका व्यक्तिहरूको लागि सरकारी सेवाहरूमा पहुँचको लागि आवश्यक छ। नागरिकता वंशक्रम, जन्म, प्राकृतिकीकरण, वा सम्मानजनक माध्यमबाट प्राप्त हुन सक्छ, जबकि दोहोरो नागरिकता अनुमत छैन।',
+                visualGuide: 'दृश्य गाइड',
+                visualGuideDesc: 'नागरिकता कार्ड र निबिधान (आवेदन फार्म) को नमूना दृश्य।',
+                cardSampleTitle: 'नागरिकता कार्ड नमूना',
+                cardSampleDesc: 'आधिकारिक कार्डको अगाडी र पछाडिको दृश्य।',
+                formTitle: 'निबिधान (आवेदन फार्म)',
+                formDesc: 'तपाईंको स्थानीय वार्ड कार्यालयमा आवश्यक फार्म।',
+                footerTrust: ' छविहरू केवल शैक्षणिक उद्देश्यहरूको लागि हुन्। <br> स्रोत: नेपाल नागरिकता ऐन, २०६३।',
+                daoTitle: 'आपनो DAO कार्यालय खोज्नुहोस्',
+                daoDesc: 'जिल्ला प्रशासन कार्यालय (DAO) को सम्पर्क विवरण खोज्न आपनो जिल्ला छनोट गर्नुहोस्।',
+                phoneLabel: 'फोन:',
+                emailLabel: 'ईमेल:'
+            }
+        };
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'ne' : 'en';
+            updatePageLanguage();
+            localStorage.setItem('preferredLanguage', currentLanguage);
+        }
+
+        function updatePageLanguage() {
+            const trans = translations[currentLanguage];
+            document.getElementById('pageTitle').textContent = trans.pageTitle;
+            document.getElementById('pageSubtitle').textContent = trans.pageSubtitle;
+            document.getElementById('langDisplay').textContent = trans.langDisplay;
+            document.getElementById('legalOverview').textContent = trans.legalOverview;
+            document.getElementById('legalText').textContent = trans.legalText;
+            document.getElementById('visualGuide').textContent = trans.visualGuide;
+            document.getElementById('visualGuideDesc').textContent = trans.visualGuideDesc;
+            document.getElementById('cardSampleTitle').textContent = trans.cardSampleTitle;
+            document.getElementById('cardSampleDesc').textContent = trans.cardSampleDesc;
+            document.getElementById('formTitle').textContent = trans.formTitle;
+            document.getElementById('formDesc').textContent = trans.formDesc;
+            document.getElementById('footerTrust').innerHTML = trans.footerTrust;
+            document.getElementById('daoTitle').textContent = trans.daoTitle;
+            document.getElementById('daoDesc').textContent = trans.daoDesc;
+            document.getElementById('phoneLabel').textContent = trans.phoneLabel;
+            document.getElementById('emailLabel').textContent = trans.emailLabel;
+        }
+
+        // Load language on page load
+        window.addEventListener('load', () => {
+            updatePageLanguage();
+        });
+
+        window.toggleLanguage = toggleLanguage;
+    </script>

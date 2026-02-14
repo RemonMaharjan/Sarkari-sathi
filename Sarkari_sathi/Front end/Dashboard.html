@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sarkari Sathi — Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Dashboard.css">
+</head>
+
+<body>
+    <div class="mountains"></div>
+
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                
+                <div>
+                    <h1>Sarkari Sathi</h1>
+                    <p>Step-by-step government guidance</p>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="pill" id="langToggle" onclick="toggleLanguage()" style="cursor: pointer; background: none; border: none; padding: 8px 16px;">Language: <b id="langDisplay">EN / नेपाली</b></button>
+                <button class="logout" onclick="window.location.href='login.html'">Logout</button>
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Services -->
+            <section class="panel">
+                <div class="panelHead">
+                    <h2>What do you want to do today?</h2>
+                    <p>Sarkari Sathi will guide you step-by-step with required documents, fees, and next steps.</p>
+
+                    <div class="chips">
+                        <div class="chip" onclick="prefill('I lost my citizenship')">I lost my citizenship</div>
+                        <div class="chip" onclick="prefill('Documents needed for passport')">Documents needed for
+                            passport</div>
+                        <div class="chip" onclick="prefill('Driving license renewal steps')">Driving license renewal
+                            steps</div>
+                    </div>
+                </div>
+
+                <div class="services">
+                    <div class="svc" onclick="window.location.href='citizenship.html'">
+                        <div class="svcIcon">1</div>
+                        <div>
+                            <p class="svcTitle">Citizenship</p>
+                            <p class="svcSub">New / Lost / Correction</p>
+                        </div>
+                        <div class="arrow">›</div>
+                    </div>
+
+                    <div class="svc" onclick="window.location.href='passport.html'">
+                        <div class="svcIcon">2</div>
+                        <div>
+                            <p class="svcTitle">Passport</p>
+                            <p class="svcSub">New / Renewal / Appointment</p>
+                        </div>
+                        <div class="arrow">›</div>
+                    </div>
+
+                        <div class="svc" onclick="window.location.href='license.html'">
+                            <div class="svcIcon">3</div>
+                            <div>
+                                <p class="svcTitle">Driving License</p>
+                                <p class="svcSub">Two / Four wheeler</p>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+
+                        <div class="svc" onclick="window.location.href='voterid.html'">
+                            <div class="svcIcon">4</div>
+                            <div>
+                                <p class="svcTitle">Voter ID</p>
+                                <p class="svcSub">First-time / Correction</p>
+                            </div>
+                            <div class="arrow">›</div>
+                        </div>
+                    </div>
+            </section>
+
+            <!-- Chatbot -->
+            <aside class="panel">
+                <div class="chatHead">
+                    <div class="bot">:</div>
+                    <div>
+                        <h3>How can I help you today?</h3>
+                        <p>Ask anything about documents, steps, fees, and offices.</p>
+                    </div>
+                </div>
+
+                <div class="chatBody" id="chatBody">
+                    <div class="msg botMsg">
+                        👋 Hi! I’m Sarkari Sathi. Tell me what you want to do — I’ll ask the right questions and give
+                        you a checklist.
+                    </div>
+                    <div class="msg botMsg">
+                        Quick start: “I lost my citizenship” or “Documents needed for passport”.
+                    </div>
+                </div>
+
+                <div class="chatInput">
+                    <input id="chatInput" type="text" placeholder="Type your message..." />
+                    <button class="send" id="sendBtn">➤</button>
+                </div>
+
+                <div style="padding:10px 20px; font-size:13px; color:var(--muted);">
+                    <label style="display:flex;align-items:center;gap:8px;"><input id="smartToggle" type="checkbox"> Use Gemini smart replies (proxy)</label>
+                </div>
+
+                <div class="footerTrust">
+                    Tip: Click a service card OR just chat — both work.
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        // Gemini key (kept here as a static value per request; the chatbot will only use local JSON datasets)
+        const GEMINI_KEY = "AIzaSyCBcxwlotXrTSvISS08-Yxv2O0WMiLgra8";
+
+        const chatBody = document.getElementById('chatBody');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        let chatData = {
+            citizenship: null,
+            driving: null,
+            passport: null,
+            voter: null,
+            contacts: null
+        };
+
+        async function initChatData() {
+            try {
+                const base = '../dataset/';
+                const [cResp, dResp, pResp, vResp, nResp] = await Promise.all([
+                    fetch(base + 'citizenship_rules.json'),
+                    fetch(base + 'driving_license_data.json'),
+                    fetch(base + 'passport_data.json'),
+                    fetch(base + 'voter_id_data.json'),
+                    fetch(base + 'nepal_continfo.json')
+                ]);
+
+                chatData.citizenship = await cResp.json();
+                chatData.driving = await dResp.json();
+                chatData.passport = await pResp.json();
+                chatData.voter = await vResp.json();
+                chatData.contacts = await nResp.json();
+                console.log('Chat datasets loaded (local only).');
+            } catch (err) {
+                console.error('Failed to load chat datasets:', err);
+            }
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function addMsg(text, who = "user") {
+            const div = document.createElement('div');
+            div.className = `msg ${who === "user" ? "userMsg" : "botMsg"}`;
+            // allow newlines in responses
+            div.innerHTML = escapeHtml(String(text)).replace(/\n/g, '<br>');
+            chatBody.appendChild(div);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // --- Multi-turn dialogue manager using local JSON data ---
+        function summarizeObject(obj) {
+            if (!obj) return '';
+            const parts = [];
+            if (obj.title) parts.push(obj.title);
+            if (obj.criteria) parts.push(typeof obj.criteria === 'string' ? obj.criteria : JSON.stringify(obj.criteria));
+            if (obj.required_documents) parts.push('Required documents:\n' + obj.required_documents.map((d, i) => `${i+1}. ${d}`).slice(0,10).join('\n'));
+            if (obj.process && Array.isArray(obj.process)) parts.push('Steps:\n' + obj.process.map((p, i) => `${i+1}. ${p}`).join('\n'));
+            return parts.join('\n\n');
+        }
+
+        function findDistrictInfo(text) {
+            if (!chatData.contacts || !chatData.contacts.data) return null;
+            const t = text.toLowerCase();
+            for (const d of chatData.contacts.data) {
+                const name = d.district.toLowerCase();
+                if (t.includes(name) || t.includes(name.replace('_', ' '))) {
+                    return { district: d.district, phone: d.mobile, email: d.email };
+                }
+            }
+            // fuzzy match: try token overlap or small edit distance
+            const token = t.replace(/[^a-z0-9]/g, '');
+            if (!token) return null;
+            let best = null;
+            let bestScore = 9999;
+            for (const d of chatData.contacts.data) {
+                const name = d.district.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const dist = levenshtein(token, name);
+                if (dist < bestScore) { bestScore = dist; best = d; }
+            }
+            // accept if reasonably close (distance threshold)
+            if (best && bestScore <= 3) return { district: best.district, phone: best.mobile, email: best.email };
+            return null;
+        }
+
+        // simple Levenshtein distance
+        function levenshtein(a, b) {
+            if (!a) return b.length;
+            if (!b) return a.length;
+            const matrix = [];
+            for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+            for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+            for (let i = 1; i <= b.length; i++) {
+                for (let j = 1; j <= a.length; j++) {
+                    if (b.charAt(i - 1) === a.charAt(j - 1)) matrix[i][j] = matrix[i - 1][j - 1];
+                    else matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1);
+                }
+            }
+            return matrix[b.length][a.length];
+        }
+
+        // session state for multi-turn
+        const session = {
+            intent: null,      // 'citizenship'|'passport'|'driving'|'voter'|'contact'
+            subtype: null,     // 'new'|'lost'|'renewal'|'correction' etc.
+            district: null,
+            awaiting: null     // 'intent'|'subtype'|'district'|null
+        };
+
+        function detectIntent(text) {
+            const t = text.toLowerCase();
+            if (t.includes('citizen') || t.includes('citizenship')) return 'citizenship';
+            if (t.includes('passport')) return 'passport';
+            if (t.includes('license') || t.includes('driving')) return 'driving';
+            if (t.includes('voter')) return 'voter';
+            // check if user asked about DAO contact explicitly
+            if (t.includes('dao') || t.includes('district') || t.includes('office') || t.includes('contact')) return 'contact';
+            return null;
+        }
+
+        function extractSubtype(text) {
+            const t = text.toLowerCase();
+            if (t.match(/\b(new|first|first time|first-time)\b/)) return 'new';
+            if (t.match(/\b(lost|stolen|destroyed|duplicate|pratilipi)\b/)) return 'lost';
+            if (t.match(/\b(renew|renewal|renewing)\b/)) return 'renewal';
+            if (t.match(/\b(correction|correct|change|update)\b/)) return 'correction';
+            return null;
+        }
+
+        function buildResponseFor(intent, subtype, districtObj) {
+            if (!intent) return "What service do you need help with? (citizenship, passport, driving license, voter ID)";
+
+            if (intent === 'contact') {
+                if (districtObj) return `DAO Office - ${districtObj.district}\nPhone: ${districtObj.phone}\nEmail: ${districtObj.email}`;
+                return 'Please tell me your district (e.g., Kathmandu, Lalitpur) to find the DAO office contact.';
+            }
+
+            // map intent+subtype to dataset keys
+            const map = {
+                citizenship: { new: 'new_citizenship_descent', lost: 'lost_destroyed_citizenship' },
+                driving: { new: 'driving_license_new', lost: 'license_lost_destroyed_replacement' },
+                passport: { new: 'passport_new', lost: 'passport_lost_stolen_damaged' },
+                voter: { new: 'voter_id_new', lost: 'voter_id_lost_or_correction' }
+            };
+
+            const key = map[intent] && map[intent][subtype || 'new'];
+            const dataset = chatData[intent];
+            if (!dataset || !key || !dataset[key]) {
+                return 'I have limited info for that exact scenario. Please specify if this is new, renewal, lost, or correction.';
+            }
+
+            const obj = dataset[key];
+            const lines = [];
+            if (districtObj) lines.push(`District: ${districtObj.district}`);
+            if (obj.title) lines.push(obj.title);
+            if (obj.criteria) lines.push('\nCriteria:\n' + (typeof obj.criteria === 'string' ? obj.criteria : JSON.stringify(obj.criteria)));
+            if (obj.required_documents) lines.push('\nRequired Documents:\n' + obj.required_documents.map((d,i)=>`${i+1}. ${d}`).join('\n'));
+            if (obj.process && Array.isArray(obj.process)) lines.push('\nProcess (step-by-step):\n' + obj.process.map((p,i)=>`${i+1}. ${p}`).join('\n'));
+
+            // try to find fee info in object under common keys
+            const feeKeys = ['fees_nepal','additional_fees','fees','fee','fee_nepal'];
+            for (const k of feeKeys) {
+                if (obj[k]) {
+                    lines.push('\nFees / charges:\n' + (typeof obj[k] === 'string' ? obj[k] : JSON.stringify(obj[k])));
+                    break;
+                }
+            }
+
+            lines.push('\nNext: I can give a compact checklist, copyable checklist, DAO contact, or a short summary. Reply with "checklist", "contact", "summary", or ask another question.');
+            return lines.join('\n');
+        }
+
+        function answerTurn(userText) {
+            const t = userText.trim();
+            // check if user included district name
+            const districtObj = findDistrictInfo(t);
+
+            // If already in a session awaiting a piece of info
+            if (session.awaiting === 'intent') {
+                const intent = detectIntent(t);
+                if (intent) {
+                    session.intent = intent;
+                    session.awaiting = 'subtype';
+                    return 'Got it. Is this a new application, renewal, lost/duplicate, or a correction?';
+                }
+                return 'Please tell me which service: citizenship, passport, driving license, or voter ID.';
+            }
+
+            if (session.awaiting === 'subtype') {
+                const subtype = extractSubtype(t);
+                if (subtype) {
+                    session.subtype = subtype;
+                    session.awaiting = 'district';
+                    return 'Thanks — which district was this issued from or which DAO office do you belong to? (e.g., Kathmandu)';
+                }
+                return 'Please say whether this is New, Renewal, Lost/Duplicate, or Correction.';
+            }
+
+            if (session.awaiting === 'district') {
+                const d = districtObj;
+                if (d) {
+                    session.district = d.district;
+                    session.awaiting = null;
+                    return buildResponseFor(session.intent, session.subtype, d);
+                }
+                // user replied but no district matched
+                return 'I could not recognise that district. Try typing the district name or a nearby major district.';
+            }
+
+            // If no active session, try to detect intent and subtype directly from text
+            const intent = detectIntent(t);
+            const subtype = extractSubtype(t);
+
+            if (intent) {
+                session.intent = intent;
+                if (!subtype) {
+                    session.awaiting = 'subtype';
+                    return 'Do you mean New, Renewal, Lost/Duplicate, or Correction?';
+                }
+                session.subtype = subtype;
+                // If user already provided district in the same message
+                if (districtObj) {
+                    session.district = districtObj.district;
+                    session.awaiting = null;
+                    return buildResponseFor(intent, subtype, districtObj);
+                }
+                session.awaiting = 'district';
+                return 'Which district was this issued from or which DAO office do you belong to? (e.g., Kathmandu)';
+            }
+
+            // user requesting a specific follow-up
+            if (t.toLowerCase().includes('checklist') && session.intent) {
+                const map = {
+                    citizenship: { new: 'new_citizenship_descent', lost: 'lost_destroyed_citizenship' },
+                    driving: { new: 'driving_license_new', lost: 'license_lost_destroyed_replacement' },
+                    passport: { new: 'passport_new', lost: 'passport_lost_stolen_damaged' },
+                    voter: { new: 'voter_id_new', lost: 'voter_id_lost_or_correction' }
+                };
+                const key = (map[session.intent] && map[session.intent][session.subtype || 'new']) || Object.keys(chatData[session.intent] || {})[0];
+                const obj = (chatData[session.intent] && chatData[session.intent][key]);
+                if (obj) {
+                    let out = [];
+                    if (obj.required_documents) out.push('Required documents:\n' + obj.required_documents.map((d,i)=>`${i+1}. ${d}`).join('\n'));
+                    if (obj.process && Array.isArray(obj.process)) out.push('\nSteps to complete:\n' + obj.process.map((p,i)=>`${i+1}. ${p}`).join('\n'));
+                    out.push('\nYou can copy this checklist or ask me to copy it to clipboard.');
+                    return out.join('\n');
+                }
+            }
+
+            // Not recognized — fallback search
+            const found = fallbackSearch(t);
+            if (found) return found;
+
+            return 'I didn\'t understand — you can ask for: citizenship, passport, driving license, voter ID, or DAO contact. Which one do you need help with?';
+        }
+
+        async function callSmartModel(userText) {
+            // Build a compact context from the local datasets for the current intent
+            const intent = session.intent || detectIntent(userText) || '';
+            const subtype = session.subtype || extractSubtype(userText) || '';
+            const mapKey = {
+                citizenship: { new: 'new_citizenship_descent', lost: 'lost_destroyed_citizenship' },
+                driving: { new: 'driving_license_new', lost: 'license_lost_destroyed_replacement' },
+                passport: { new: 'passport_new', lost: 'passport_lost_stolen_damaged' },
+                voter: { new: 'voter_id_new', lost: 'voter_id_lost_or_correction' }
+            };
+
+            const datasetSnippet = [];
+            if (intent && chatData[intent]) {
+                const key = (mapKey[intent] && mapKey[intent][subtype || 'new']) || Object.keys(chatData[intent])[0];
+                const obj = chatData[intent][key];
+                if (obj) datasetSnippet.push({ key, content: obj });
+            }
+            // always include DAO contacts (small)
+            if (chatData.contacts) datasetSnippet.push({ key: 'nepal_continfo', content: chatData.contacts.data.slice(0, 30) });
+
+            const payload = {
+                message: userText,
+                context: datasetSnippet,
+                note: 'Only use the provided context to answer. If answer is not available, say you don\'t know and suggest next steps.'
+            };
+
+            try {
+                const res = await fetch('/api/generate', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('proxy request failed');
+                const data = await res.json();
+                return data.output || 'No output from model.';
+            } catch (err) {
+                console.warn('Smart proxy failed, falling back to local:', err);
+                return null;
+            }
+        }
+
+        async function send() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            addMsg(text, 'user');
+            chatInput.value = '';
+
+            const smartEnabled = document.getElementById('smartToggle') && document.getElementById('smartToggle').checked;
+
+            if (smartEnabled) {
+                const smartReply = await callSmartModel(text);
+                if (smartReply) { addMsg(smartReply, 'bot'); return; }
+                // else fallback to local dialogue manager
+            }
+
+            try {
+                const reply = answerTurn(text);
+                setTimeout(() => addMsg(reply, 'bot'), 200);
+            } catch (err) {
+                console.error(err);
+                addMsg('Something went wrong while processing your request.', 'bot');
+            }
+        }
+
+        sendBtn.addEventListener('click', send);
+        chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+
+        // Fill chat input from chips
+        function prefill(txt) { chatInput.value = txt; chatInput.focus(); }
+        window.prefill = prefill;
+
+        // Route to service pages (hook to your real pages)
+        function goService(name) { window.location.href = `service-details.html?service=${name.toLowerCase().replace(' ', '')}`; }
+        window.goService = goService;
+
+        // Initialize datasets on load
+        initChatData();
+
+        // ===== LANGUAGE TOGGLE FUNCTIONALITY =====
+        let currentLanguage = 'en';
+
+        const translations = {
+            en: {
+                brand_title: 'Sarkari Sathi',
+                brand_subtitle: 'Step-by-step government guidance',
+                lang_display: 'EN / नेपाली',
+                services_title: 'What do you want to do today?',
+                services_subtitle: 'Sarkari Sathi will guide you step-by-step with required documents, fees, and next steps.',
+                chip1: 'I lost my citizenship',
+                chip2: 'Documents needed for passport',
+                chip3: 'Driving license renewal steps',
+                service1_title: 'Citizenship',
+                service1_sub: 'New / Lost / Correction',
+                service2_title: 'Passport',
+                service2_sub: 'New / Renewal / Appointment',
+                service3_title: 'Driving License',
+                service3_sub: 'Two / Four wheeler',
+                service4_title: 'Voter ID',
+                service4_sub: 'First-time / Correction',
+                chat_title: 'How can I help you today?',
+                chat_subtitle: 'Ask anything about documents, steps, fees, and offices.',
+                chat_placeholder: 'Type your message...',
+                chat_smart_label: 'Use Gemini smart replies (proxy)',
+                chat_tip: 'Tip: Click a service card OR just chat — both work.',
+                chat_greeting: '👋 Hi! I\'m Sarkari Sathi. Tell me what you want to do — I\'ll ask the right questions and give you a checklist.',
+                chat_quickstart: 'Quick start: "I lost my citizenship" or "Documents needed for passport".',
+                logout: 'Logout',
+                // Chat bot responses
+                chat_service_prompt: 'What service do you need help with? (citizenship, passport, driving license, voter ID)',
+                chat_intent_prompt: 'Got it. Is this a new application, renewal, lost/duplicate, or a correction?',
+                chat_subtype_error: 'Please tell me which service: citizenship, passport, driving license, or voter ID.',
+                chat_subtype_prompt: 'Thanks — which district was this issued from or which DAO office do you belong to? (e.g., Kathmandu)',
+                chat_subtype_error2: 'Please say whether this is New, Renewal, Lost/Duplicate, or Correction.',
+                chat_district_error: 'I could not recognise that district. Try typing the district name or a nearby major district.',
+                chat_intent_help: 'Which district was this issued from or which DAO office do you belong to? (e.g., Kathmandu)',
+                chat_fallback: 'I didn\'t understand — you can ask for: citizenship, passport, driving license, voter ID, or DAO contact. Which one do you need help with?',
+                chat_no_info: 'I have limited info for that exact scenario. Please specify if this is new, renewal, lost, or correction.',
+                chat_generic_error: 'Something went wrong while processing your request.'
+            },
+            ne: {
+                brand_title: 'सरकारी साथी',
+                brand_subtitle: 'चरणबद्ध सरकारी मार्गदर्शन',
+                lang_display: 'नेपाली / EN',
+                services_title: 'आज तपाईंले के गर्न चाहनुहुन्छ?',
+                services_subtitle: 'सरकारी साथीले तपाईंलाई आवश्यक कागजातहरू, शुल्कहरू र अगाडिको चरणहरू सहित चरणबद्ध मार्गदर्शन गर्नेछ।',
+                chip1: 'मेरो नागरिकता हराएको छ',
+                chip2: 'पासपोर्टको लागि आवश्यक कागजात',
+                chip3: 'ड्राइभिङ लाइसेन्स नवीकरण चरणहरू',
+                service1_title: 'नागरिकता',
+                service1_sub: 'नयाँ / हराएको / सुधार',
+                service2_title: 'पासपोर्ट',
+                service2_sub: 'नयाँ / नवीकरण / अपोइन्टमेन्ट',
+                service3_title: 'ड्राइभिङ लाइसेन्स',
+                service3_sub: 'दुई / चार पहिया',
+                service4_title: 'मतदाता पहचान पत्र',
+                service4_sub: 'पहिलो पटक / सुधार',
+                chat_title: 'मैले आज तपाईंलाई कसरी मद्दत गर्न सक्छु?',
+                chat_subtitle: 'कागजातहरू, चरणहरू, शुल्कहरू र कार्यालयहरू बारे कुनै पनि कुरा सोध्नुहोस्।',
+                chat_placeholder: 'आपनो सन्देश टाइप गर्नुहोस्...',
+                chat_smart_label: 'Gemini स्मार्ट उत्तरहरू प्रयोग गर्नुहोस् (प्रॉक्सी)',
+                chat_tip: 'सुझाव: सेवा कार्ड क्लिक गर्नुहोस् वा केवल च्याट गर्नुहोस् — दुबै काम गर्छ।',
+                chat_greeting: '👋 नमस्ते! मैं सरकारी साथी हूँ। मलाई बताउनुहोस् तपाई के गर्न चाहनुहुन्छ — मैले सही प्रश्नहरू सोध्नेछु र तपाईंलाई चेकलिस्ट दिनेछु।',
+                chat_quickstart: 'द्रुत शुरुवात: "मेरो नागरिकता हराएको छ" वा "पासपोर्टको लागि आवश्यक कागजात"।',
+                logout: 'बाहिर निस्कनुहोस्',
+                // Chat bot responses
+                chat_service_prompt: 'तपाईंले कुन सेवाको लागि मद्दतको आवश्यकता छ? (नागरिकता, पासपोर्ट, ड्राइभिङ लाइसेन्स, मतदाता पहचान)',
+                chat_intent_prompt: 'ठीक छ। यो नयाँ आवेदन, नवीकरण, हराएको/डुप्लिकेट, वा सुधार हो?',
+                chat_subtype_error: 'कृपया मलाई बताउनुहोस् कुन सेवा: नागरिकता, पासपोर्ट, ड्राइभिङ लाइसेन्स, वा मतदाता पहचान।',
+                chat_subtype_prompt: 'धन्यवाद — यो कुन जिल्लाबाट जारी भएको थियो वा तपाई कुन DAO कार्यालयसँग सम्बन्धित हुनुहुन्छ? (उदा. काठमाडौं)',
+                chat_subtype_error2: 'कृपया नयाँ, नवीकरण, हराएको/डुप्लिकेट, वा सुधार हो भन्नुहोस्।',
+                chat_district_error: 'मैले त्यो जिल्ला पहचान गर्न सकेन। जिल्लाको नाम वा नजिकको ठूलो जिल्ला टाइप गर्न प्रयास गर्नुहोस्।',
+                chat_intent_help: 'यो कुन जिल्लाबाट जारी भएको थियो वा तपाई कुन DAO कार्यालयसँग सम्बन्धित हुनुहुन्छ? (उदा. काठमाडौं)',
+                chat_fallback: 'मैले बुझेन — तपाई सोध्न सक्नुहुन्छ: नागरिकता, पासपोर्ट, ड्राइभिङ लाइसेन्स, मतदाता पहचान, वा DAO सम्पर्क। कुन एक?',
+                chat_no_info: 'मेरोसँग त्यो सटीक परिस्थितिको लागि सीमित जानकारी छ। कृपया यो नयाँ, नवीकरण, हराएको, वा सुधार हो भन्न निर्दिष्ट गर्नुहोस्।',
+                chat_generic_error: 'आपनो अनुरोध प्रशोधन गर्दा केहि गलत भयो।'
+            }
+        };
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'ne' : 'en';
+            updatePageLanguage();
+            localStorage.setItem('preferredLanguage', currentLanguage);
+        }
+
+        function updatePageLanguage() {
+            const trans = translations[currentLanguage];
+            
+            // Update text content
+            document.querySelector('.brand h1').textContent = trans.brand_title;
+            document.querySelector('.brand p').textContent = trans.brand_subtitle;
+            document.getElementById('langDisplay').textContent = trans.lang_display;
+            document.querySelector('.panelHead h2').textContent = trans.services_title;
+            document.querySelector('.panelHead p').textContent = trans.services_subtitle;
+            
+            // Update chips
+            const chips = document.querySelectorAll('.chip');
+            chips[0].textContent = trans.chip1;
+            chips[1].textContent = trans.chip2;
+            chips[2].textContent = trans.chip3;
+            
+            // Update service cards
+            const serviceCards = document.querySelectorAll('.svc');
+            serviceCards[0].querySelector('.svcTitle').textContent = trans.service1_title;
+            serviceCards[0].querySelector('.svcSub').textContent = trans.service1_sub;
+            serviceCards[1].querySelector('.svcTitle').textContent = trans.service2_title;
+            serviceCards[1].querySelector('.svcSub').textContent = trans.service2_sub;
+            serviceCards[2].querySelector('.svcTitle').textContent = trans.service3_title;
+            serviceCards[2].querySelector('.svcSub').textContent = trans.service3_sub;
+            serviceCards[3].querySelector('.svcTitle').textContent = trans.service4_title;
+            serviceCards[3].querySelector('.svcSub').textContent = trans.service4_sub;
+            
+            // Update chat heading
+            document.querySelector('.chatHead h3').textContent = trans.chat_title;
+            document.querySelector('.chatHead p').textContent = trans.chat_subtitle;
+            
+            // Update chat input placeholder
+            document.getElementById('chatInput').placeholder = trans.chat_placeholder;
+            
+            // Update smart toggle label
+            const smartLabel = document.querySelector('label[style*="display:flex"]');
+            if (smartLabel) {
+                smartLabel.innerHTML = `<input id="smartToggle" type="checkbox"> ${trans.chat_smart_label}`;
+            }
+            
+            // Update footer tip
+            document.querySelector('.footerTrust').textContent = trans.chat_tip;
+            
+            // Update logout button
+            document.querySelector('.logout').textContent = trans.logout;
+            
+            // Clear and reset chat with greeting
+            chatBody.innerHTML = '';
+            const greetingDiv = document.createElement('div');
+            greetingDiv.className = 'msg botMsg';
+            greetingDiv.textContent = trans.chat_greeting;
+            chatBody.appendChild(greetingDiv);
+            
+            const quickstartDiv = document.createElement('div');
+            quickstartDiv.className = 'msg botMsg';
+            quickstartDiv.textContent = trans.chat_quickstart;
+            chatBody.appendChild(quickstartDiv);
+        }
+
+        // Update answerTurn to use translations for bot responses
+        const originalAnswerTurn = answerTurn;
+        function answerTurnTranslated(userText) {
+            const trans = translations[currentLanguage];
+            const t = userText.trim();
+            const districtObj = findDistrictInfo(t);
+
+            if (session.awaiting === 'intent') {
+                const intent = detectIntent(t);
+                if (intent) {
+                    session.intent = intent;
+                    session.awaiting = 'subtype';
+                    return trans.chat_intent_prompt;
+                }
+                return trans.chat_subtype_error;
+            }
+
+            if (session.awaiting === 'subtype') {
+                const subtype = extractSubtype(t);
+                if (subtype) {
+                    session.subtype = subtype;
+                    session.awaiting = 'district';
+                    return trans.chat_subtype_prompt;
+                }
+                return trans.chat_subtype_error2;
+            }
+
+            if (session.awaiting === 'district') {
+                const d = districtObj;
+                if (d) {
+                    session.district = d.district;
+                    session.awaiting = null;
+                    return buildResponseFor(session.intent, session.subtype, d);
+                }
+                return trans.chat_district_error;
+            }
+
+            const intent = detectIntent(t);
+            const subtype = extractSubtype(t);
+
+            if (intent) {
+                session.intent = intent;
+                if (!subtype) {
+                    session.awaiting = 'subtype';
+                    return trans.chat_intent_prompt;
+                }
+                session.subtype = subtype;
+                if (districtObj) {
+                    session.district = districtObj.district;
+                    session.awaiting = null;
+                    return buildResponseFor(intent, subtype, districtObj);
+                }
+                session.awaiting = 'district';
+                return trans.chat_intent_help;
+            }
+
+            if (t.toLowerCase().includes('checklist') && session.intent) {
+                const map = {
+                    citizenship: { new: 'new_citizenship_descent', lost: 'lost_destroyed_citizenship' },
+                    driving: { new: 'driving_license_new', lost: 'license_lost_destroyed_replacement' },
+                    passport: { new: 'passport_new', lost: 'passport_lost_stolen_damaged' },
+                    voter: { new: 'voter_id_new', lost: 'voter_id_lost_or_correction' }
+                };
+                const key = (map[session.intent] && map[session.intent][session.subtype || 'new']) || Object.keys(chatData[session.intent] || {})[0];
+                const obj = (chatData[session.intent] && chatData[session.intent][key]);
+                if (obj) {
+                    let out = [];
+                    if (obj.required_documents) out.push('Required documents:\n' + obj.required_documents.map((d,i)=>`${i+1}. ${d}`).join('\n'));
+                    if (obj.process && Array.isArray(obj.process)) out.push('\nSteps to complete:\n' + obj.process.map((p,i)=>`${i+1}. ${p}`).join('\n'));
+                    out.push('\nYou can copy this checklist or ask me to copy it to clipboard.');
+                    return out.join('\n');
+                }
+            }
+
+            const found = fallbackSearch(t);
+            if (found) return found;
+
+            return trans.chat_fallback;
+        }
+
+        // Override answerTurn to use translations
+        window.answerTurn = answerTurnTranslated;
+
+        // Load saved language preference on page load
+        window.addEventListener('load', () => {
+            const saved = localStorage.getItem('preferredLanguage');
+            if (saved) {
+                currentLanguage = saved;
+                updatePageLanguage();
+            }
+        });
+
+        window.toggleLanguage = toggleLanguage;
+    </script>
+</body>
+
+</html>

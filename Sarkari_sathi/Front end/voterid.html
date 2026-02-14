@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sarkari Sathi — Voter ID</title>
+    <link rel="stylesheet" href="Dashboard.css">
+    <style>
+        .voter-container {
+            padding: 20px;
+            text-align: center;
+        }
+        .voter-card-img {
+            max-width: 400px;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+        .legal-box {
+            background: rgba(15, 118, 110, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            margin: 20px;
+            border-radius: 0 12px 12px 0;
+            line-height: 1.6;
+            font-size: 14.5px;
+        }
+        /* Style for the Enroll Button */
+        .enroll-section {
+            padding: 30px 20px;
+            text-align: center;
+            background: white;
+            border-top: 1px solid var(--line);
+        }
+        .enroll-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--primary2));
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 10px 25px rgba(15,118,110,.25);
+            transition: transform 0.2s ease;
+        }
+        .enroll-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="mountains"></div>
+
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+            
+                <div>
+                    <h1 id="pageTitle">Voter ID (मतदाता परिचय पत्र)</h1>
+                    <p id="pageSubtitle">Registration & Election Commission Guidance</p>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button class="pill" onclick="toggleLanguage()" style="cursor: pointer; background: none; border: none; padding: 8px 16px;">Language: <b id="langDisplay">EN / नेपाली</b></button>
+                <button class="logout" onclick="window.location.href='Dashboard.html'">← Back to Dashboard</button>
+            </div>
+        </div>
+
+        <div class="grid">
+            <section class="panel">
+                <div class="panelHead">
+                    <h2 id="legalOverview">Legal Overview</h2>
+                </div>
+                
+                <div class="legal-box" id="legalText">
+                    In Nepal, the Voter ID Card (Matadata Parichaya Patra) is an essential biometric 
+                    identification document issued by the Election Commission of Nepal (ECN). 
+                    It is mandatory for casting a vote in national and local elections.
+                </div>
+
+                <div class="panelHead" style="border-top: 1px solid var(--line);">
+                    <h2 id="visualGuide">Visual Guide</h2>
+                    <p id="visualGuideDesc">Standard Voter ID Card issued by the Election Commission of Nepal.</p>
+                </div>
+
+                <div class="voter-container">
+                    <img src="Votercard.jpg" alt="Voter ID Card Sample" class="voter-card-img">
+                    <p class="svcTitle" id="cardTitle">Voter ID Sample</p>
+                    <p class="svcSub" id="cardDesc">Sample of the card used for national and local voting.</p>
+                </div>
+
+                <div class="enroll-section">
+                    <h3 id="enrollTitle">Want to register for Voter ID?</h3>
+                    <p class="svcSub" id="enrollDesc" style="margin-bottom: 20px;">You can start your pre-enrollment process online via the official portal.</p>
+                    <a href="https://applyvr.election.gov.np/" target="_blank" class="enroll-btn" id="enrollBtn">Enroll Now →</a>
+                </div>
+            </section>
+
+            <aside class="panel">
+                <div class="chatHead">
+                    <div class="bot"></div>
+                    <div><h3 id="electionOfficeTitle">Election Office Info</h3></div>
+                </div>
+                <div style="padding: 20px;">
+                    <p id="electionOfficeDesc" style="font-size: 13px; color: var(--muted); margin-bottom: 10px;">
+                        Select your district to find the local administrative contact for voter related queries.
+                    </p>
+                    
+                    <select id="districtSelect" onchange="showContactInfo()" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--line); margin-bottom: 20px;">
+                        <option value="">-- Select District --</option>
+                    </select>
+
+                    <div id="contactResult" style="display: none; background: rgba(15, 118, 110, 0.08); padding: 15px; border-radius: 12px; border: 1px solid rgba(15, 118, 110, 0.2);">
+                        <p id="daoName" style="font-weight: 800; color: var(--primary); margin-bottom: 8px;"></p>
+                        <p style="font-size: 13.5px;"><b id="phoneLabel">Phone:</b> <span id="daoPhone"></span></p>
+                        <p style="font-size: 13.5px;"><b id="emailLabel">Email:</b> <span id="daoEmail"></span></p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="contact.js"></script>
+    <script>
+        let currentLanguage = localStorage.getItem('preferredLanguage') || 'en';
+
+        const translations = {
+            en: {
+                pageTitle: 'Voter ID (मतदाता परिचय पत्र)',
+                pageSubtitle: 'Registration & Election Commission Guidance',
+                langDisplay: 'EN / नेपाली',
+                legalOverview: 'Legal Overview',
+                legalText: 'In Nepal, the Voter ID Card (Matadata Parichaya Patra) is an essential biometric identification document issued by the Election Commission of Nepal (ECN). It is mandatory for casting a vote in national and local elections.',
+                visualGuide: 'Visual Guide',
+                visualGuideDesc: 'Standard Voter ID Card issued by the Election Commission of Nepal.',
+                cardTitle: 'Voter ID Sample',
+                cardDesc: 'Sample of the card used for national and local voting.',
+                enrollTitle: 'Want to register for Voter ID?',
+                enrollDesc: 'You can start your pre-enrollment process online via the official portal.',
+                enrollBtnText: 'Enroll Now →',
+                electionOfficeTitle: 'Election Office Info',
+                electionOfficeDesc: 'Select your district to find the local administrative contact for voter related queries.',
+                phoneLabel: 'Phone:',
+                emailLabel: 'Email:'
+            },
+            ne: {
+                pageTitle: 'मतदाता परिचय पत्र',
+                pageSubtitle: 'दर्ता र चुनाव आयोग मार्गदर्शन',
+                langDisplay: 'नेपाली / EN',
+                legalOverview: 'कानूनी विवरण',
+                legalText: 'नेपालमा, मतदाता परिचय पत्र (मतदाता परिचय पत्र) नेपालको चुनाव आयोग (ECN) द्वारा जारी गरिएको एक आवश्यक बायोमेट्रिक पहिचान दस्तावेज हो। राष्ट्रिय र स्थानीय चुनावमा मत गर्नको लागि यो अनिवार्य छ।',
+                visualGuide: 'दृश्य गाइड',
+                visualGuideDesc: 'नेपालको चुनाव आयोगले जारी गरेको मानक मतदाता परिचय पत्र।',
+                cardTitle: 'मतदाता परिचय पत्र नमूना',
+                cardDesc: 'राष्ट्रिय र स्थानीय मतदानमा प्रयोग गरिने कार्डको नमूना।',
+                enrollTitle: 'के तपाई मतदाता परिचय पत्रको लागि दर्ता गर्न चाहनुहुन्छ?',
+                enrollDesc: 'तपाई आधिकारिक पोर्टल मार्फत अनलाइन पूर्व-नामांकन प्रक्रिया सुरु गर्न सक्नुहुन्छ।',
+                enrollBtnText: 'अब दर्ता गर्नुहोस् →',
+                electionOfficeTitle: 'चुनाव कार्यालय जानकारी',
+                electionOfficeDesc: 'मतदातासँग सम्बन्धित प्रश्नहरूको लागि स्थानीय प्रशासनिक सम्पर्क खोज्न आपनो जिल्ला छनोट गर्नुहोस्।',
+                phoneLabel: 'फोन:',
+                emailLabel: 'ईमेल:'
+            }
+        };
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'ne' : 'en';
+            updatePageLanguage();
+            localStorage.setItem('preferredLanguage', currentLanguage);
+        }
+
+        function updatePageLanguage() {
+            const trans = translations[currentLanguage];
+            document.getElementById('pageTitle').textContent = trans.pageTitle;
+            document.getElementById('pageSubtitle').textContent = trans.pageSubtitle;
+            document.getElementById('langDisplay').textContent = trans.langDisplay;
+            document.getElementById('legalOverview').textContent = trans.legalOverview;
+            document.getElementById('legalText').textContent = trans.legalText;
+            document.getElementById('visualGuide').textContent = trans.visualGuide;
+            document.getElementById('visualGuideDesc').textContent = trans.visualGuideDesc;
+            document.getElementById('cardTitle').textContent = trans.cardTitle;
+            document.getElementById('cardDesc').textContent = trans.cardDesc;
+            document.getElementById('enrollTitle').textContent = trans.enrollTitle;
+            document.getElementById('enrollDesc').textContent = trans.enrollDesc;
+            document.getElementById('enrollBtn').textContent = trans.enrollBtnText;
+            document.getElementById('electionOfficeTitle').textContent = trans.electionOfficeTitle;
+            document.getElementById('electionOfficeDesc').textContent = trans.electionOfficeDesc;
+            document.getElementById('phoneLabel').textContent = trans.phoneLabel;
+            document.getElementById('emailLabel').textContent = trans.emailLabel;
+        }
+
+        window.addEventListener('load', () => {
+            updatePageLanguage();
+        });
+
+        window.toggleLanguage = toggleLanguage;
+    </script>
