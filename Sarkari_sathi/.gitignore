@@ -1,0 +1,37 @@
+# --- SECRETS & CREDENTIALS ---
+# Never upload your API keys or service accounts!
+.env
+*.json
+!package.json
+!manifest.json
+# Exclude the specific Firebase service account key if named differently
+serviceAccountKey.json
+firebase_credentials.json
+
+# --- PYTHON ---
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+
+# --- DATABASES ---
+# Local SQLite databases (if you have any left)
+*.db
+*.sqlite3
+
+# --- IDEs & EDITORS ---
+# VS Code settings
+.vscode/
+# MacOS system files
+.DS_Store
+
+# --- FIREBASE ---
+# Firebase debug logs
+firebase-debug.log
+.firebase/
